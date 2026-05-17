@@ -1,0 +1,743 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Context 与注意力：一种理解世界的元方法</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="e9781874-cf68-410a-a3c4-78d0e007f610" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">📖</span></div><h1 class="page-title" dir="auto">Context 与注意力：一种理解世界的元方法</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><h1 id="3c2783ff-e3cf-45e3-8c91-1df9823f8990" class="">一部关于「有限智能」的通论</h1></div><div style="display:contents" dir="auto"><blockquote id="131f7795-fec2-4bdc-941f-791f12ee0b6d" class="">世界就是所发生的一切。…我的语言的边界，就是我的世界的边界。</blockquote></div><div style="display:contents" dir="auto"><blockquote id="c5eae1ec-31fd-41a1-8c43-1d778738b278" class="">——维特根斯坦，《逻辑哲学论》，1921</blockquote></div><div style="display:contents" dir="auto"><hr id="f08959ee-9565-4eb0-898b-946be60d34ba"/></div><div style="display:contents" dir="auto"><h2 id="3228bce8-4355-4553-9a46-24038314605c" class="">第〇部　定义</h2></div><div style="display:contents" dir="auto"><p id="dc94ae59-bd98-4a92-8bfb-6650e0f8bcf3" class="">在展开任何讨论之前，我们必须像几何学那样，先把基本概念钉死。否则，越往后推进，语言越滑。</p></div><div style="display:contents" dir="auto"><h3 id="7322ee8a-ba80-4168-a99b-d1501ece3332" class="">定义一：Context（语境 / 上下文）</h3></div><div style="display:contents" dir="auto"><blockquote id="7a5ae242-1ee4-43f7-8958-601b3811f447" class=""><strong>Context（语境）</strong> 是：在某个时刻，能够影响一个决策或行动的<strong>所有可能信息</strong>的集合。</blockquote></div><div style="display:contents" dir="auto"><p id="4f6f01cb-4c01-4459-a194-beccf003a1cb" class="">它有三个关键属性：</p></div><div style="display:contents" dir="auto"><ul id="5f2a6451-4635-403c-a035-6b84ba6f222b" class="bulleted-list"><li style="list-style-type:disc"><strong>潜在性</strong>：context 是&quot;可能被用到&quot;的信息场，不是&quot;正在被用到&quot;的信息。就像你走进一个房间——墙上的钟、窗外的雨、桌角的杯子——全都是你的潜在语境，但你不会同时意识到它们。</li></ul></div><div style="display:contents" dir="auto"><ul id="2e88d237-5db5-4ec2-8698-41f327ff3efe" class="bulleted-list"><li style="list-style-type:disc"><strong>动态性</strong>：context 随时间和行动不断变化。你读完这句话后，你的语境已经不一样了。</li></ul></div><div style="display:contents" dir="auto"><ul id="71c7ab2c-9b26-4182-b684-ebe1e47f9f4f" class="bulleted-list"><li style="list-style-type:disc"><strong>分层性</strong>：context 有远近层次——此刻屏幕上的字（近层）&lt; 今天上午开的会（中层）&lt; 你大学学过的某门课（远层）。</li></ul></div><div style="display:contents" dir="auto"><h3 id="7a4d34b4-a090-4dd5-b6a6-20e1fdd3343d" class="">定义二：Attention（注意力）</h3></div><div style="display:contents" dir="auto"><blockquote id="21cef09a-4c90-4212-8c61-67195477c903" class=""><strong>Attention（注意力）</strong> 是：将有限的处理资源<strong>选择性地分配</strong>给 context 的某个子集。</blockquote></div><div style="display:contents" dir="auto"><p id="644278e4-57e0-4e87-a71b-9ca36faf0dbe" class="">注意，注意力的本质是<strong>选择 + 分配</strong>，而不是&quot;接收&quot;。它有两面：</p></div><div style="display:contents" dir="auto"><ul id="a6f61cda-48a4-4f91-afdf-b3b1ea88f064" class="bulleted-list"><li style="list-style-type:disc"><strong>激活</strong>：让某些信息从 context 的&quot;背景&quot;进入处理器的&quot;焦点&quot;。</li></ul></div><div style="display:contents" dir="auto"><ul id="8330a22e-99e4-4bc9-9306-5fb541b18401" class="bulleted-list"><li style="list-style-type:disc"><strong>抑制</strong>：让其余信息留在背景中。没有抑制，就没有注意。看不见的和看得见的同等重要。</li></ul></div><div style="display:contents" dir="auto"><p id="26f7f88b-0f7d-4144-95d9-485f8a493e58" class="">这个定义早在 1890 年就有了。威廉·詹姆斯（William James）在《心理学原理》中写道：</p></div><div style="display:contents" dir="auto"><blockquote id="9e28a730-ffb4-472c-a9f8-67c1334ff322" class="">每个人都知道注意是什么。它是心灵以清晰而鲜活的形式，从几个似乎同时可能的对象或思想序列中，占有其中一个。聚焦、集中、意识，是其本质。它意味着从某些事物中撤退，以便有效地处理其他事物。</blockquote></div><div style="display:contents" dir="auto"><h3 id="2d37d760-6db2-44a0-a287-1086d74a1c13" class="">定义三：带宽（Bandwidth）</h3></div><div style="display:contents" dir="auto"><blockquote id="e7472e65-3738-4500-ab13-46016ad873d0" class=""><strong>带宽</strong> 是：一个处理单元在同一时刻<strong>能够有效激活的 context 的最大数量</strong>。</blockquote></div><div style="display:contents" dir="auto"><p id="c345747d-19d5-4d9b-b11a-e67203f7c5b4" class="">人类的带宽大约是 <strong>4 ± 1 个信息块</strong>（Cowan, 2001）。不是 4 个字节，不是 4 个词——而是 4 个<strong>有意义的 &quot;块&quot;（chunk）</strong>。一个&quot;块&quot;可以是一个数字，也可以是一整个你已经烂熟于心的象棋阵型。经验的本质，就是把更多信息打包进一个 chunk，从而在带宽不变的前提下处理更复杂的 context。</p></div><div style="display:contents" dir="auto"><h3 id="2f5467d9-2763-4f9a-9741-d90962e28674" class="">二者的关系</h3></div><div style="display:contents" dir="auto"><blockquote id="d82e93c9-de07-4bae-a5e0-8b7da69911bf" class=""><strong>注意力作用于 context。</strong></blockquote></div><div style="display:contents" dir="auto"><p id="d400c176-be9a-474f-9040-840469b7fe8a" class="">context 是<strong>信息的场</strong>，注意力是<strong>场的探照灯</strong>。探照灯照到哪里，哪里就被&quot;加热&quot;——进入工作状态；其余区域继续保持低温备用。两者相互定义：没有 context，注意力没有可选择的材料；没有注意力，context 只是一片未经处理的混沌。</p></div><div style="display:contents" dir="auto"><hr id="509f08e3-a4e0-4b91-b61d-abd2c06c41cb"/></div><div style="display:contents" dir="auto"><h2 id="7c81d323-7fcf-4a25-bef5-c4068ee12a16" class="">第一部　三大公理</h2></div><div style="display:contents" dir="auto"><p id="b15fe260-caed-46e6-90c6-d83fd2c69866" class="">有了定义，我们才能谈公理。以下三条，不证自明但后果深远。</p></div><div style="display:contents" dir="auto"><h3 id="75df2b4f-c43e-442c-a5f9-92adc19721d7" class="">公理一：注意力守恒（稀缺性原理）</h3></div><div style="display:contents" dir="auto"><blockquote id="7c9eff25-6f9c-4364-8b15-d57fd55dface" class="">任何处理单元上，注意力是一种<strong>零和资源</strong>——增加 A 的注意力配额，必以削减 B 的注意力配额为代价。</blockquote></div><div style="display:contents" dir="auto"><p id="e2f214ae-30e9-4487-aed3-2e968b318076" class="">这不是哲学主张，而是生理事实。</p></div><div style="display:contents" dir="auto"><ul id="2bf78eab-622f-44b9-9eda-8ad50463eb73" class="bulleted-list"><li style="list-style-type:disc"><strong>神经学证据</strong>：人脑约 860 亿神经元，但前额叶皮层——负责工作记忆和选择性注意的核心区域——在任何时刻只能维持约 4 个&quot;热&quot;表征。这不是训练可以改变的；这是硬件限制。</li></ul></div><div style="display:contents" dir="auto"><ul id="0e37a104-272e-4fd7-b989-20a8b8d315bd" class="bulleted-list"><li style="list-style-type:disc"><strong>人类学证据</strong>：Robin Dunbar 在 1992 年发现，人类社交关系的稳定上限约为 150 人——这不是文化现象，而是新皮层尺寸的数学推导。你的大脑皮层大小，决定了你能稳定维护多少人的 social context。</li></ul></div><div style="display:contents" dir="auto"><ul id="4cb14b19-e894-4503-9482-8b9b6f9ddd1f" class="bulleted-list"><li style="list-style-type:disc"><strong>经济学证据</strong>：Herbert Simon 1971 年说：&quot;信息的丰富，创造注意力的贫困。&quot;他因此获得诺贝尔经济学奖。&quot;有限理性&quot;的实质，就是决策者无法将全部相关 context 纳入考虑。</li></ul></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="15d73517-6370-4e96-b65c-c523e1286c9f"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="a27d726d-e1ca-4cfd-8c3a-fd656ae74786" class=""><strong>第一条推论</strong></p></div><div style="display:contents" dir="auto"><p id="88a93c50-51eb-4617-93df-d74049a4867a" class="">凡声称&quot;面面俱到&quot;的设计或系统，都在某处偷偷做了取舍。识别这个隐藏的取舍点，是一切系统分析的第一步。</p></div></div></figure></div><div style="display:contents" dir="auto"><h3 id="b2c10fdf-fea9-4b2e-9c1b-875d5fc8582e" class="">公理二：局部性原理（相关性随距离衰减）</h3></div><div style="display:contents" dir="auto"><blockquote id="5b505745-7184-4301-bf2c-555717ddfe5a" class="">在一个 context 场中，两个信息元素之间的<strong>相关性的期望值</strong>，随它们在某个维度上的距离增大而递减。这个维度可以是时间、空间、因果关系或语义距离。</blockquote></div><div style="display:contents" dir="auto"><p id="64c3cc84-3ac9-4876-8455-441d20770717" class="">这是宇宙最普遍的规律之一，只是在不同的学科里穿了不同的名字：</p></div><div style="display:contents" dir="auto"><ul id="13f709fd-6650-4978-a95a-4d542e8dbf50" class="bulleted-list"><li style="list-style-type:disc"><strong>物理学</strong>：光锥。你只能与过去光锥内的物体发生因果交互。太远的事件，对你根本&quot;不存在&quot;。</li></ul></div><div style="display:contents" dir="auto"><ul id="cc57899b-e9a0-4e08-b029-f0fb22a87516" class="bulleted-list"><li style="list-style-type:disc"><strong>计算机科学</strong>：局部性原理。程序 90% 的内存访问集中在 10% 的地址空间。（Knuth, <em>The Art of Computer Programming</em>, Vol. 1）</li></ul></div><div style="display:contents" dir="auto"><ul id="406c7e08-2573-43a4-85db-bafbe3a56da9" class="bulleted-list"><li style="list-style-type:disc"><strong>地理学</strong>：Tobler 第一定律。&quot;一切事物都与其他事物相关，但近者比远者更相关。&quot;（Waldo Tobler, 1970）</li></ul></div><div style="display:contents" dir="auto"><ul id="006843ec-6597-4eab-803a-c2fffb34dbd0" class="bulleted-list"><li style="list-style-type:disc"><strong>语言学</strong>：Firth 的分布假说。&quot;一个词的意义，由它周围的词决定。&quot;上下文越近的词，语义贡献越大。</li></ul></div><div style="display:contents" dir="auto"><ul id="cbe24482-be5b-4343-9fd6-4678687c69a3" class="bulleted-list"><li style="list-style-type:disc"><strong>社会学</strong>：你更可能与你物理距离更近的人成为朋友——社交网络研究反复验证了&quot;接近效应&quot;。</li></ul></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="bfae3310-7dc9-4a58-960d-3f64dac3b609"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="0e62dbbc-cffb-4ae9-8bfa-4f7a42ab3ba3" class=""><strong>第二条推论</strong></p></div><div style="display:contents" dir="auto"><p id="aff3d952-043e-4034-a0c4-44bab0fe722a" class="">设计的核心动作只有两个：把相关的东西在 context 中拉近，把无关的东西在 context 中推远。信息架构、界面布局、文档结构——它们的优劣，都取决于这两个动作做得好不好。</p></div></div></figure></div><div style="display:contents" dir="auto"><h3 id="ff5dc813-e0d6-4f0c-94fa-b7b479f5a608" class="">公理三：压缩—检索权衡（无免费午餐定理）</h3></div><div style="display:contents" dir="auto"><blockquote id="830f5d34-3195-4f66-aa2c-2f242f4a9ea6" class="">任何 context 系统都必须在<strong>压缩程度</strong>与<strong>检索保真度</strong>之间做一次不可回避的取舍。压缩越狠，检索时丢失的细节越多；保留越完整，消费时需要的带宽越高。</blockquote></div><div style="display:contents" dir="auto"><p id="daaab675-2111-4150-a3cd-86277e4dfee2" class="">这是信息论在认知领域的回响。原始信息可以无损压缩吗？理论上可以，但有极限——Shannon 熵。超过这个极限，信息必然丢失。</p></div><div style="display:contents" dir="auto"><p id="efe8aef3-896a-462f-974b-9a3813ca0e78" class="">认知系统面对的是同样的困境：</p></div><div style="display:contents" dir="ltr"><table id="172e0059-61a8-4c37-ba93-2bed610dbff2" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="8342fb34-c95f-40b8-ba23-758c13ac23b4"><th id="Mi=S" class="simple-table-header-color simple-table-header" style="width:120px">压缩程度</th><th id="gVFw" class="simple-table-header-color simple-table-header" style="width:180px">例子</th><th id="ajiU" class="simple-table-header-color simple-table-header" style="width:200px">优势</th><th id="vs&gt;A" class="simple-table-header-color simple-table-header" style="width:200px">代价</th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="60345a13-d792-4e5b-8e24-32634856fed4"><td id="Mi=S" class="" style="width:120px">极高压缩</td><td id="gVFw" class="" style="width:180px">成语、口号、KPI 数字、星级评分</td><td id="ajiU" class="" style="width:200px">传播快、带宽消耗低</td><td id="vs&gt;A" class="" style="width:200px">丢失情境细节；&quot;996&quot; 三个字无法还原真实的劳动体验</td></tr></div><div style="display:contents" dir="ltr"><tr id="fc5c1e80-77e3-4314-b154-1af05fe687a4"><td id="Mi=S" class="" style="width:120px">中等压缩</td><td id="gVFw" class="" style="width:180px">会议纪要、摘要、笔记</td><td id="ajiU" class="" style="width:200px">平衡</td><td id="vs&gt;A" class="" style="width:200px">选择哪些保留、哪些丢弃——这本身就消耗注意力</td></tr></div><div style="display:contents" dir="ltr"><tr id="e42e0348-5a89-4b76-b8b6-313c62e2ddd4"><td id="Mi=S" class="" style="width:120px">极低压缩</td><td id="gVFw" class="" style="width:180px">原始录音、未剪辑视频、全量日志</td><td id="ajiU" class="" style="width:200px">信息完整</td><td id="vs&gt;A" class="" style="width:200px">无人有带宽消费；搜索成本吞噬了完整性收益</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><p id="fdadc8b9-cba9-41b3-99cd-c9b5af9660cb" class="">一个极端的例证来自文学：博尔赫斯 1942 年的短篇《博闻强记的富内斯》。主人公遭遇事故后获得了<strong>绝对记忆</strong>——他记得一切，每一个细节、每一片树叶的每一次颤动。结果？</p></div><div style="display:contents" dir="auto"><blockquote id="861f52ee-30a8-44a6-ac21-51cd86011903" class="">他无法思考。思考，就是遗忘差异，就是概括、抽象。</blockquote></div><div style="display:contents" dir="auto"><p id="c69afc33-db37-4af7-8a0f-a6c0c3c67cb4" class=""><strong>遗忘不是缺陷，是功能。</strong> 没有压缩，就没有理解。</p></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="eb66e756-e39b-4730-9f13-4a0817edf2a1"><div style="font-size:1.5em"><span class="icon">💡</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="c7ca4e57-7dc0-45d0-bcdd-12a5e32f4a74" class=""><strong>第三条推论</strong></p></div><div style="display:contents" dir="auto"><p id="8337c837-3357-43fa-8dff-77579e43f978" class="">好的 context 设计，从来不等于&quot;保留更多&quot;；它等于&quot;以正确的结构遗忘&quot;。Zettelkasten、MECE 原则、金字塔原理、数据库范式——它们都是&quot;遗忘策略&quot;的不同流派。</p></div></div></figure></div><div style="display:contents" dir="auto"><hr id="28d0cb00-2f6e-4a9b-8e69-30671f601ca6"/></div><div style="display:contents" dir="auto"><h2 id="88f462c6-9591-488a-91f0-bb1125894fae" class="">第二部　推导</h2></div><div style="display:contents" dir="auto"><p id="7ddc23c0-7ff1-4344-b53e-1de18663b6de" class="">公理已经立下，现在我们来&quot;推导&quot;——看这三条公理在不同的领域中可以引申出什么。</p></div><div style="display:contents" dir="auto"><h3 id="5b84aaf1-fe03-4739-92bc-9446edc414b5" class="">第一章　叙事设计：读者是带宽受限的 context 处理器</h3></div><div style="display:contents" dir="auto"><h4 id="25976b0e-6843-41e1-b35e-e67dd5ce4c2f" class="">从公理出发</h4></div><div style="display:contents" dir="auto"><ul id="975cc0e5-5888-4145-aacc-d87156c4730b" class="bulleted-list"><li style="list-style-type:disc"><strong>公理一（注意力守恒）</strong> 告诉我们：读者在任何时刻只能关注有限的人物、线索和细节。一部小说塞进 30 个有名有姓的角色，读者的注意力就崩塌了。</li></ul></div><div style="display:contents" dir="auto"><ul id="d9ff461f-5b89-4f70-a1e9-5b25a52bc98c" class="bulleted-list"><li style="list-style-type:disc"><strong>公理二（局部性）</strong> 告诉我们：读者更容易记住近期出现的信息。因此，伏笔如果隔了 300 页才回收而没有中间提示，就等于没埋。</li></ul></div><div style="display:contents" dir="auto"><ul id="4805c3d7-2763-4929-8b97-c27ad9bac180" class="bulleted-list"><li style="list-style-type:disc"><strong>公理三（压缩—检索权衡）</strong> 告诉我们：作者必须选择性地呈现——不可能也没有必要把世界上的所有信息都给读者。海明威的&quot;冰山理论&quot;正是此意。</li></ul></div><div style="display:contents" dir="auto"><h4 id="4087b5af-164f-44cd-8a5b-0783ee7aaf86" class="">三种叙事策略的压缩率分析</h4></div><div style="display:contents" dir="auto"><p id="e0894579-9654-478a-9fae-93089de544b9" class="">E. M. 福斯特在《小说面面观》（1927）中区分了 story 与 plot：</p></div><div style="display:contents" dir="auto"><blockquote id="433ea021-d8f2-473a-b7de-866f15bc928f" class="">故事是按时间顺序排列的事件叙述。情节也是事件叙述，但重点落在因果关系上。</blockquote></div><div style="display:contents" dir="auto"><p id="2b9bbdc7-2ace-4c96-8d48-45cfabf2730f" class="">从我们的框架看：</p></div><div style="display:contents" dir="auto"><ul id="b1490214-ef7e-4a03-a30a-9bd088fb6c66" class="bulleted-list"><li style="list-style-type:disc"><strong>Story</strong> 是 context 的<strong>时间线性排列</strong>——你只需要跟随时间轴。带宽需求低，但理解深度也低。</li></ul></div><div style="display:contents" dir="auto"><ul id="61154c04-8676-485c-b238-c79f7682ca88" class="bulleted-list"><li style="list-style-type:disc"><strong>Plot</strong> 是 context 的<strong>因果图</strong>——你需要在脑中同时维持多个因果链的开放状态。带宽需求高，但理解深度也高。</li></ul></div><div style="display:contents" dir="auto"><p id="6237e315-2add-4fd9-9b6a-fe3ca50f9687" class="">这就是为什么侦探小说如此依赖 plot：<strong>它们故意控制读者 context 的信息不对称</strong>。</p></div><div style="display:contents" dir="auto"><p id="78171282-1346-442d-8205-eb0880685011" class="">三种可复用的叙事 context 策略：</p></div><div style="display:contents" dir="auto"><ol type="1" id="590e6570-5f69-4900-bc1c-cde78e5eb4a6" class="numbered-list" start="1"><li><strong>契诃夫枪（Chekhov&#x27;s Gun）</strong>：契诃夫本人的原话是——&quot;如果第一幕墙上挂着一把枪，它必须在第三幕开火。&quot;<strong>翻译</strong>：不要埋你不打算回收的 context 线索，否则你在浪费读者的注意力配额。</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="5efffcf8-1251-4519-b5e7-c8d8289aae1f" class="numbered-list" start="2"><li><strong>不可靠叙述者</strong>：石黑一雄的《长日将尽》、阿加莎·克里斯蒂的《罗杰疑案》。<strong>翻译</strong>：叙述者的 context 是污染的、不完整的，读者必须自己从字里行间重建真实 context——这本身就是推理的乐趣来源。</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="045f299a-29cd-46c2-8bb3-a56727278ac2" class="numbered-list" start="3"><li><strong>冰山理论</strong>：海明威——&quot;一座冰山的尊严在于它只有八分之一露出水面。&quot;<strong>翻译</strong>：优秀的作者故意压缩 context，迫使读者用自己的经验填补空白。读者参与了意义的建构，因此体验更深刻。</li></ol></div><div style="display:contents" dir="auto"><h4 id="292400b9-807d-4263-aa86-49a4a3139f66" class="">数据</h4></div><div style="display:contents" dir="auto"><p id="f075153d-7dfb-48c2-8a69-cfd01be9f3d2" class="">Stanford 大学 Ang Li 等人（2023）对 IMDb 上评分最高的 10,000 部电影的剧本做了关键词分析。结果：<strong>高评分剧本（≥ 8.0）的第一幕与第三幕之间的关键词共现密度，是低评分剧本（≤ 6.0）的约 2.3 倍。</strong> 也就是说，好故事不是&quot;更多&quot;，而是<strong>context 闭合率更高</strong>——你埋下的每一条线索，最终都收到了回执。</p></div><div style="display:contents" dir="auto"><h4 id="50bf17a2-01ea-49b7-bbaf-33c554e4bd23" class="">对产品设计的迁移</h4></div><div style="display:contents" dir="auto"><p id="320e4714-9cf4-44c7-8ea9-c7a7ff94e363" class="">用户体验弧线与叙事弧线是同构的：</p></div><div style="display:contents" dir="auto"><ul id="87db09bb-6a80-46bd-8c77-a4fb9c3e6400" class="bulleted-list"><li style="list-style-type:disc"><strong>Onboarding = 第一幕</strong>：埋下产品的核心&quot;道具&quot;（功能概念、交互模式）</li></ul></div><div style="display:contents" dir="auto"><ul id="7110ae4d-8eb8-418a-a9d4-6ed6aa36e801" class="bulleted-list"><li style="list-style-type:disc"><strong>日常使用 = 第二幕</strong>：用户在场景中积累 context</li></ul></div><div style="display:contents" dir="auto"><ul id="b8c1d999-31d4-46d2-8f4a-1d4de4a5a3b1" class="bulleted-list"><li style="list-style-type:disc"><strong>Aha moment = 第三幕的回收</strong>：用户终于理解&quot;哦，这个东西原来是用在这里的！&quot;</li></ul></div><div style="display:contents" dir="auto"><hr id="860d91bd-1e93-4cbd-beb6-099ae4454e59"/></div><div style="display:contents" dir="auto"><h3 id="22a668da-5ed3-4ab9-a2e1-7751b7e070cb" class="">第二章　组织管理：把公司视为 context 流动网络</h3></div><div style="display:contents" dir="auto"><h4 id="6b8129ad-4e3c-48f0-a18a-69d871b5330e" class="">从公理出发</h4></div><div style="display:contents" dir="auto"><ul id="61b89c72-b8c1-49a6-90f7-9e7c1e40f26d" class="bulleted-list"><li style="list-style-type:disc"><strong>公理一（注意力守恒）</strong> 告诉我们：任何管理者的决策质量，受他同时处理的 context 数量上限约束。超出带宽上限的决策，质量必然下降。</li></ul></div><div style="display:contents" dir="auto"><ul id="283cc717-a7be-4880-b7ea-ed81abbee7d1" class="bulleted-list"><li style="list-style-type:disc"><strong>公理二（局部性）</strong> 告诉我们：一线员工拥有前线 context 的局部性优势，高管拥有战略 context 的全局性优势。信息在层级间传递时必然伴随压缩——压缩失真 = 决策误差。</li></ul></div><div style="display:contents" dir="auto"><ul id="1a669d0e-1ba5-46d5-b77d-91502020802c" class="bulleted-list"><li style="list-style-type:disc"><strong>公理三（压缩—检索权衡）</strong> 告诉我们：KPI、报表和例会纪要是对组织 context 的压缩产物。压缩率越高（越简洁），丢失的细节越多——但压缩率太低，CEO 根本看不完。</li></ul></div><div style="display:contents" dir="auto"><h4 id="71c2d681-fde9-4a7b-93bb-48b26182402c" class="">组织形态即 context 路由拓扑</h4></div><div style="display:contents" dir="ltr"><table id="c6c82b03-e560-4ced-a378-0fe63d63e251" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="6916f0c9-0034-46d3-801f-c3fff11c5a60"><th id="qO^I" class="simple-table-header-color simple-table-header" style="width:100px">组织形态</th><th id="B;Ul" class="simple-table-header-color simple-table-header" style="width:200px">context 流</th><th id="^D~M" class="simple-table-header-color simple-table-header" style="width:120px">压缩率</th><th id="MzF\" class="simple-table-header-color simple-table-header" style="width:150px">带宽消耗</th><th id="[WKw" class="simple-table-header-color simple-table-header" style="width:120px">反应速度</th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="1e786ffb-9cf8-4ee5-b5dd-e4eb2e1638f1"><td id="qO^I" class="" style="width:100px">科层制</td><td id="B;Ul" class="" style="width:200px">自下而上压缩上报，自上而下决策下达</td><td id="^D~M" class="" style="width:120px">极高</td><td id="MzF\" class="" style="width:150px">低</td><td id="[WKw" class="" style="width:120px">慢（失真大）</td></tr></div><div style="display:contents" dir="ltr"><tr id="23fc9815-321a-4bc0-a735-aa4a66dc8388"><td id="qO^I" class="" style="width:100px">矩阵制</td><td id="B;Ul" class="" style="width:200px">每人两条 context 流（职能 + 项目）</td><td id="^D~M" class="" style="width:120px">中等</td><td id="MzF\" class="" style="width:150px">高（更多会议）</td><td id="[WKw" class="" style="width:120px">中等</td></tr></div><div style="display:contents" dir="ltr"><tr id="d0b18dca-f183-4a96-bb16-5f4c9f98f923"><td id="qO^I" class="" style="width:100px">网络/扁平</td><td id="B;Ul" class="" style="width:200px">context 横向自由流动</td><td id="^D~M" class="" style="width:120px">低</td><td id="MzF\" class="" style="width:150px">极高（信息过载风险）</td><td id="[WKw" class="" style="width:120px">快</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><p id="4962b9e1-0e79-498d-9028-80559e4fd4d6" class="">没有任何一种形态是&quot;最优&quot;的——三种公理的约束相互拮抗，设计组织形态就是在三者之间找平衡。</p></div><div style="display:contents" dir="auto"><h4 id="58259377-8aef-4566-b305-a87337cc6109" class="">约束理论的新解读</h4></div><div style="display:contents" dir="auto"><p id="23d0ac2c-59ce-44bd-9230-b6ea3186a78b" class="">Eliyahu Goldratt 1984 年在《目标》中提出：<strong>系统的产出取决于其最薄弱的环节</strong>。</p></div><div style="display:contents" dir="auto"><p id="2be5f937-a7f6-400d-b757-45a7ef7b15f7" class="">用我们的公理重述：<strong>组织的瓶颈 = 被迫并发处理 context 数量最多、同时处理带宽最低的那个节点。</strong> 这个节点通常是某个中层管理者——上面的战略压缩太狠（看不懂）、下面的一线细节太多（看不完）、同时被横向部门的对齐会议填满日程。</p></div><div style="display:contents" dir="auto"><p id="598af204-6684-4875-b0a7-4f35e5c49a66" class=""><strong>解决方法：减少并发 context。</strong></p></div><div style="display:contents" dir="auto"><p id="03aaa78d-c20f-4bc0-a87b-04ae085c6e37" class="">丰田生产系统的&quot;看板（Kanban）&quot;是这一思想的工程实现。看板规则：</p></div><div style="display:contents" dir="auto"><ol type="1" id="77da54f9-423e-42c3-b80b-1128ec19d18c" class="numbered-list" start="1"><li>下游工序从上游拉取，而非上游推送——下游用实际需求（context 信号）决定生产</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="d45645b3-a96c-4cc0-9e80-2109a4dcc1d9" class="numbered-list" start="2"><li>每张看板卡代表一个在制品（WIP）——系统内同时存在的 context 数量有上限</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="c06ef90c-dcc2-4ee5-8c52-cfb90d39cd91" class="numbered-list" start="3"><li>WIP 上限一旦达到，不新增——强制集中注意力完成手头任务</li></ol></div><div style="display:contents" dir="auto"><p id="552c037f-6464-4c18-b934-b8be54972279" class="">David Anderson 2007 年在微软 XIT 部门引入类似机制后，平均交付周期从 <strong>98 天降至 11 天</strong>。不是因为做得更快，而是因为<strong>同时在做的更少</strong>。</p></div><div style="display:contents" dir="auto"><h4 id="1329f788-6e9d-4a7f-96b0-88ccade3de36" class="">OKR 的实质</h4></div><div style="display:contents" dir="auto"><p id="22cb392a-757e-4f3a-aad7-e62a299d0fee" class="">John Doerr 在《这就是 OKR》（2018）中说 OKR 的作用是&quot;浮出主要目标，引导精力和协调&quot;。</p></div><div style="display:contents" dir="auto"><p id="36f2e449-a7ab-4839-9192-6b06b02bf4ff" class="">用我们的框架翻译：<strong>OKR 是组织级的 context 压缩协议</strong>。它将每个层级无限可能的关注点，强制压缩为不超过 5 个关键结果，使分布式决策可以在不频繁通信的情况下保持方向一致。</p></div><div style="display:contents" dir="auto"><p id="c3f070cd-c259-4dd1-af22-96b613ef5f02" class="">OKR 的失败模式也因此清晰了：要么压缩过头（KR 没有反映真正重要的 context），要么根本不压缩（定了 15 个 KR，等于没定）。</p></div><div style="display:contents" dir="auto"><hr id="c489e20c-56e7-402d-84c6-327a36ceb5bb"/></div><div style="display:contents" dir="auto"><h3 id="6f999c55-ddab-4487-96f4-488fdcafad3b" class="">第三章　人类认知：记忆不是存储，是 context 重建</h3></div><div style="display:contents" dir="auto"><h4 id="2cc7c043-fe1d-4b69-bde4-ace7ab66024d" class="">从公理出发</h4></div><div style="display:contents" dir="auto"><ul id="63e1e95d-ab1d-43a7-8681-d8d1cf9d7747" class="bulleted-list"><li style="list-style-type:disc"><strong>公理一（注意力守恒）</strong> 告诉我们：人脑在任何时刻只有约 4 个信息块的活跃带宽。超过这个数的任何信息，要么未被注意，要么只是在背景中处于低激活状态。</li></ul></div><div style="display:contents" dir="auto"><ul id="85c90880-1553-4b0a-b42d-632132dc5b6f" class="bulleted-list"><li style="list-style-type:disc"><strong>公理二（局部性）</strong> 告诉我们：提取记忆时，与当前 context（环境、情绪、身体状态）更相似的经历更容易被提取。</li></ul></div><div style="display:contents" dir="auto"><ul id="10e9fb76-00f7-49a5-85ff-c5e84d91048d" class="bulleted-list"><li style="list-style-type:disc"><strong>公理三（压缩—检索权衡）</strong> 告诉我们：记忆不是录像——大脑在存储时已经做了有损压缩。每次回忆，都是一次解压 + 重建。</li></ul></div><div style="display:contents" dir="auto"><h4 id="707084b6-db87-443f-9b16-f3a58f0a8f25" class="">编码特异性：心理学最深刻的发现之一</h4></div><div style="display:contents" dir="auto"><p id="bb2c0474-93ad-4ae9-90e4-dd166c52fc14" class="">Endel Tulving 1972 年的<strong>编码特异性原则</strong>：</p></div><div style="display:contents" dir="auto"><blockquote id="6625d692-e0d9-4ff2-a78e-820f60ad6e63" class="">一段记忆能否被提取，不取决于&quot;它是否被储存&quot;，而取决于<strong>提取时的 context 与编码时的 context 有多接近</strong>。</blockquote></div><div style="display:contents" dir="auto"><p id="2c36520a-3a95-46fc-a58d-cbe4d7ab6ac8" class="">这带来的推论让人不安：</p></div><div style="display:contents" dir="auto"><ol type="1" id="890fc4fb-da8c-48b8-8dea-782a7b8498a9" class="numbered-list" start="1"><li><strong>你不&quot;拥有&quot;记忆，你&quot;重建&quot;记忆。</strong> 每次想起一件事，你都从压缩碎片中重新组装它，而组装过程受当下 context 的影响。</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="1102feeb-ddc2-4187-bb05-f297587e5ea9" class="numbered-list" start="2"><li><strong>&quot;普鲁斯特时刻&quot;</strong> 不是魔法——嗅觉皮层（唯一直接连接海马体的感官系统）提供了极高质量的 context 锚点，使提取精度远超其他感官触发。</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="4215ca7c-962b-47b0-a5af-9f089a6ecd84" class="numbered-list" start="3"><li><strong>认知行为疗法（CBT）的机制</strong>——在治疗的&quot;安全 context&quot;下，重新提取并改写旧的创伤记忆痕迹。每一次提取都是一次重写机会。</li></ol></div><div style="display:contents" dir="auto"><ol type="1" id="4ac96da4-b4a0-4a61-8a17-c9bbb83d5033" class="numbered-list" start="4"><li><strong>为什么在咖啡馆复习、在考场答题效果好？</strong> 因为环境 context 一致——你编码知识时的背景与你提取时的背景越相似，检索越容易。</li></ol></div><div style="display:contents" dir="auto"><h4 id="1a80456b-c337-48a1-88c0-628ed08b51a0" class="">工作记忆：人类的&quot;当前 context 窗口&quot;</h4></div><div style="display:contents" dir="auto"><p id="30ce438c-e1e0-4df4-94e4-ae2bdea89b70" class="">George Miller 1956 年那篇经典论文《神奇的数字：7±2》开启了量化人类认知带宽的传统。Nelson Cowan 2001 年的修正将数字精确到 <strong>4 ± 1</strong>。</p></div><div style="display:contents" dir="auto"><p id="aaf3bfe7-1b1f-4b66-9b41-39ace7cd5220" class="">重点是&quot;chunk&quot;的概念：</p></div><div style="display:contents" dir="auto"><ul id="1aad86b7-7f6f-4e91-9345-c67d3148c4f2" class="bulleted-list"><li style="list-style-type:disc">一个新手面对一盘残局，看到的是 20 个孤立的棋子——20 个 chunk，远超带宽。</li></ul></div><div style="display:contents" dir="auto"><ul id="3eeb64ef-43f7-446d-b5eb-6dd34a1e9a4a" class="bulleted-list"><li style="list-style-type:disc">一位大师看同一盘棋，看到的是 3 个&quot;阵型&quot;——3 个 chunk，刚好在带宽内。</li></ul></div><div style="display:contents" dir="auto"><p id="bac82633-8939-48a2-b7f7-474e777986b5" class=""><strong>经验的本质，就是把更多信息打包进更少的 chunk。</strong> 这本身就是一种压缩策略。</p></div><div style="display:contents" dir="auto"><p id="96f1e670-f651-47ce-8d05-76e1efd14b03" class="">Daniel Levitin 在《有组织的心智》（<em>The Organized Mind</em>, 2014）中将这个逻辑推到了日常生活层面：<strong>为什么要把钥匙永远放在同一个地方？</strong> 因为你不需要消耗一个 chunk 来记忆钥匙的位置——通过将琐事卸载到环境中，你释放了带宽用于真正重要的决策。</p></div><div style="display:contents" dir="auto"><h4 id="892e018d-9965-43bf-8b33-36dd3c6d32e1" class="">心流：context 与注意力的完美锁定</h4></div><div style="display:contents" dir="auto"><p id="d1183dff-5c2d-4939-8bc4-905bf4b96ede" class="">Mihaly Csikszentmihalyi 的心流理论（1990）描述的是人类最优体验状态。其三个前置条件——<strong>挑战与技能的匹配、明确的目标、即时反馈</strong>——用我们的框架翻译就是：</p></div><div style="display:contents" dir="auto"><blockquote id="63eed0ca-93c1-41c3-91f7-71ab743159b6" class=""><strong>当外部 context 的复杂度刚好填满（但不过载）处理带宽，且反馈信号能即时告知你是否偏离目标时，注意力被&quot;锁定&quot;在 context 内部，外部干扰无法进入。</strong></blockquote></div><div style="display:contents" dir="auto"><p id="4032c6cd-4cd1-4f59-bea9-b3df87f6dd91" class="">神经成像研究（Ulrich et al., 2014）证实：心流状态下，前额叶皮层——负责自我监控和&quot;走神&quot;的区域——活动减弱。这是神经系统在硬件层面实现了 context 锁定。</p></div><div style="display:contents" dir="auto"><p id="890b9044-1523-4c86-8220-aa7ca6a80e61" class=""><strong>Cal Newport 在《深度工作》（2016）中引用的数据：</strong>一次打断后，恢复到深度注意力状态平均需要 <strong>23 分 15 秒</strong>（Gloria Mark, UCI）。这就是 context 切换的成本——你不仅要支付&quot;加载新 context&quot;的代价，还要支付&quot;丢弃旧 context&quot;和&quot;重新建立旧 context&quot;的代价。</p></div><div style="display:contents" dir="auto"><hr id="c6f410c0-dc4c-48ba-8cd8-3262945a43dc"/></div><div style="display:contents" dir="auto"><h3 id="507eb07b-99f2-4188-9f0c-9995b75279ad" class="">第四章　技术史：把 context 从昂贵的载体卸载到便宜的载体</h3></div><div style="display:contents" dir="auto"><p id="305ad1a1-41c4-4f16-8fae-533859674e3e" class="">如果你把整部人类技术史压缩成一条线索，那就是：</p></div><div style="display:contents" dir="auto"><blockquote id="c9d20225-05e7-4e21-9f70-8034b5b4af7d" class="">人类不断找到更便宜的介质来承载 context，从而把大脑的注意力带宽释放出来，用于更高级的活动。</blockquote></div><div style="display:contents" dir="auto"><h4 id="d67d44e6-1abe-4313-bb10-d1c883ce7925" class="">四次 context 卸载</h4></div><div style="display:contents" dir="ltr"><table id="eb4efb5a-eeaf-44ee-a5ec-54e217b1d728" class="simple-table"><thead class="simple-table-header"><div style="display:contents" dir="ltr"><tr id="c299d950-afef-4adf-b07a-df2615e68d13"><th id="o&lt;W&lt;" class="simple-table-header-color simple-table-header" style="width:120px">时代</th><th id="suDY" class="simple-table-header-color simple-table-header" style="width:220px">context 从什么卸载到什么地方</th><th id="O?=H" class="simple-table-header-color simple-table-header" style="width:200px">释放了什么</th><th id="INvV" class="simple-table-header-color simple-table-header" style="width:200px">代价</th></tr></div></thead><tbody><div style="display:contents" dir="ltr"><tr id="1f32008a-b92f-4fdf-8cdc-f8b86883b386"><td id="o&lt;W&lt;" class="" style="width:120px">文字（约前 3200）</td><td id="suDY" class="" style="width:220px">口耳相传 → 泥板/纸</td><td id="O?=H" class="" style="width:200px">不必用带宽维持跨代知识</td><td id="INvV" class="" style="width:200px">苏格拉底的担忧：文字会让人&quot;不记忆&quot;</td></tr></div><div style="display:contents" dir="ltr"><tr id="aefbed9c-aa46-4bc0-81cd-3663d4cfeaa0"><td id="o&lt;W&lt;" class="" style="width:120px">印刷术（约 1440）</td><td id="suDY" class="" style="width:220px">手抄本 → 可复制的书</td><td id="O?=H" class="" style="width:200px">知识工作者得以专业化</td><td id="INvV" class="" style="width:200px">教会对阐释权的垄断崩塌</td></tr></div><div style="display:contents" dir="ltr"><tr id="fcab3a85-9199-4b34-ae2d-28cb77345510"><td id="o&lt;W&lt;" class="" style="width:120px">互联网（约 1990）</td><td id="suDY" class="" style="width:220px">物理检索 → 数字检索</td><td id="O?=H" class="" style="width:200px">从&quot;在哪里找&quot;变为&quot;找什么&quot;</td><td id="INvV" class="" style="width:200px">信息量指数增长，注意力成为新稀缺</td></tr></div><div style="display:contents" dir="ltr"><tr id="3c765d50-629b-43ac-b76e-e72460e8df59"><td id="o&lt;W&lt;" class="" style="width:120px">个人计算机与移动设备</td><td id="suDY" class="" style="width:220px">桌面固定 → 随身 context</td><td id="O?=H" class="" style="width:200px">随时随地接入信息场</td><td id="INvV" class="" style="width:200px">碎片化：深度连接更难维持</td></tr></div></tbody></table></div><div style="display:contents" dir="auto"><h4 id="8cc83edb-4fe5-4798-9c79-385dddae9303" class="">苏格拉底早就看透了一切</h4></div><div style="display:contents" dir="auto"><p id="ce553ea9-ae41-4d0d-8eb6-3e09ae00a50c" class="">柏拉图《斐德罗篇》记录了苏格拉底对文字的批评：</p></div><div style="display:contents" dir="auto"><blockquote id="dbd6ac20-717e-4dd4-b9df-ede2d4205b38" class="">文字会让人不再运用记忆，因为他们会信任写下来的文字，不再从自己的内在回忆事物。</blockquote></div><div style="display:contents" dir="auto"><p id="55c21a23-d729-460c-980c-0abf9ce1ef00" class="">苏格拉底看出的，正是 context 卸载的代价——每一次你把认知功能交给外部工具，你就失去了一部分内在能力。</p></div><div style="display:contents" dir="auto"><p id="2901f986-024d-46fa-bb84-4241b9d5bbb0" class="">但历史证明：<strong>这个代价值得付。</strong> 没有文字，就不可能有微积分、宪法、现代科学——因为没有外部化的 context，你无法在数百年的尺度上<strong>累积</strong>知识。</p></div><div style="display:contents" dir="auto"><h4 id="9b5925d9-1f79-4261-af0d-d1f0d4f9a9c2" class="">&quot;深度&quot;的丧失与重建</h4></div><div style="display:contents" dir="auto"><p id="dc9f7d50-b471-40e1-8771-2eb197743550" class="">Nicholas Carr《浅薄》（<em>The Shallows</em>, 2010）的核心论点，用我们的框架重述：</p></div><div style="display:contents" dir="auto"><blockquote id="ca061246-ded2-4b5e-ab08-6360a5c9eff0" class="">互联网不是降低了信息质量，而是<strong>改变了注意力的拓扑结构</strong>——从&quot;长时间专注在单一 context 上&quot;变成&quot;快速跳跃在多个 context 之间&quot;。</blockquote></div><div style="display:contents" dir="auto"><p id="c5a89f6f-d409-4d61-99a0-c811aadd628a" class="">Carr 引用的神经科学数据（Small &amp; Vorgan, 2008）：每天上网超过 5 小时的人群，前额叶（深度 context 处理）活跃度下降，背外侧前额叶（快速切换）活跃度上升。<strong>大脑在硬件层面重塑了自己，以适应新的 context 环境。</strong></p></div><div style="display:contents" dir="auto"><p id="9d75df63-ba44-40c3-88f3-1b3c8a803eaf" class="">关键不是&quot;互联网让人变蠢&quot;，而是<strong>我们还没有为新的 context 环境设计好相应的保护机制</strong>。</p></div><div style="display:contents" dir="auto"><hr id="36321d58-91de-4940-bf49-8ce9e9be3974"/></div><div style="display:contents" dir="auto"><h2 id="85909157-e1fe-4a4e-b9b5-e098f216fdaf" class="">第三部　十条设计法则</h2></div><div style="display:contents" dir="auto"><p id="71111739-e1c4-4b53-b410-ac3e61c80a9e" class="">前面都是&quot;是什么&quot;和&quot;为什么&quot;。最后回到&quot;怎么办&quot;——这十条，是我建议你和每一个做产品、系统、组织设计的人当作检验清单的。</p></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="8a14c87b-1649-47e7-8c6d-c941b2bb2aaa"><div style="font-size:1.5em"><span class="icon">🔟</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="bf53189f-01cb-4cd6-9531-796c22fd0f22" class=""><strong>L1　先问&quot;用户/系统此刻的 context 是什么&quot;，再问&quot;应该做什么&quot;。</strong></p></div><div style="display:contents" dir="auto"><p id="454b72a4-1968-4b27-a621-c667ab526e93" class="">功能是对 context 的回应。context 不对，再好的功能也是答非所问。</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="a5887370-d9c7-4577-b6f3-6444b9334131"><div style="font-size:1.5em"><span class="icon">🔟</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="16193968-59fe-4033-8cbf-85584ff13663" class=""><strong>L2　每个界面元素都在消费注意力配额。加一个东西之前，先找到可以减掉的东西。</strong></p></div><div style="display:contents" dir="auto"><p id="6659c3f2-08c1-4f44-adee-cdaf525bef2e" class="">设计的减法不是审美，是经济学。多一个未读 badge，就从用户真正需要处理的事务中偷走了一份带宽。</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="e14bbf1e-a4a4-4ffb-8a5c-80cae25ad25d"><div style="font-size:1.5em"><span class="icon">🔟</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="d784d657-dd85-4e80-85da-6bd5f6aee397" class=""><strong>L3　让相关的东西靠近，让无关的东西远离。</strong></p></div><div style="display:contents" dir="auto"><p id="154cda9b-5912-4f13-a1f4-ab4c07bb1bbd" class="">这等价于公理二的工程化。信息架构、菜单结构、文档组织——它们的判断标准只有这一条。</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="c6715229-b51b-4798-882c-00bce3567799"><div style="font-size:1.5em"><span class="icon">🔟</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="ed0187ca-d7da-4eb9-9f46-2b1c5d65acb9" class=""><strong>L4　WIP 限制适用于一切系统。</strong></p></div><div style="display:contents" dir="auto"><p id="9b028d8d-3b08-488e-9b1b-257fdbdbc879" class="">个人同时关注的领域 ≤ 3。团队同时进行的大项目 ≤ 5。产品首页同时强调的卖点 ≤ 3。违反任何一个，效率崩塌只是时间问题。</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="a467ece1-57fd-40be-bf37-b44ce3241954"><div style="font-size:1.5em"><span class="icon">🔟</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="fdb41dc8-e209-4d19-a062-8da911bca929" class=""><strong>L5　好的压缩 = 正确的遗忘，不是&quot;更短&quot;。</strong></p></div><div style="display:contents" dir="auto"><p id="172d9554-103b-4ccd-a6f8-6f4553bf72e3" class="">Zettelkasten 笔记法之所以革命，不是因为它让笔记变短——而是它用一个<strong>结构化的遗忘策略</strong>（原子化 + 显式链接），代替了传统的无序遗忘。</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="3df48262-4bf1-4f54-ac85-e2c04b34eef5"><div style="font-size:1.5em"><span class="icon">🔟</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="e2f451e4-99ba-40c7-9375-67b64f611e0a" class=""><strong>L6　Context 切换有真实成本。它不是线性的。</strong></p></div><div style="display:contents" dir="auto"><p id="f3daf8c9-bf54-48b8-9e2b-76aabc19ba24" class="">23 分钟的恢复时间意味着：每多一次打断，你损失的不仅仅是打断本身的那一分钟。一天 5 次打断 ≈ 约 2 小时的净损失。</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="1f14f8b7-f052-402c-b910-c799b00882bb"><div style="font-size:1.5em"><span class="icon">🔟</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="087c6605-90a2-431c-82ac-a3b7d9f9921b" class=""><strong>L7　不要埋你不会回收的 context。</strong></p></div><div style="display:contents" dir="auto"><p id="a5651f61-21f7-4963-9dc5-1e79690b35ed" class="">契诃夫枪的产品版：你 onboarding 时介绍的每一个功能，都应该在用户的日常路径上重逢。没有重逢的初次接触，不是教育，是噪声。</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="b68a8623-7e25-46c9-aee8-e6b8e91e4b53"><div style="font-size:1.5em"><span class="icon">🔟</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="437764fe-7006-4c9e-94e1-eb6a6cfe7f07" class=""><strong>L8　给系统一个显式的遗忘机制。</strong></p></div><div style="display:contents" dir="auto"><p id="1761e5ed-aa5a-4a20-bed5-04e2db18918a" class="">数据库要归档。聊天记录要过期。收件箱要清空。人需要睡眠来巩固记忆并遗忘不重要的细节。没有遗忘机制的系统，必死于自身复杂度。</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="9ceae730-fba3-470f-816e-6b86173e36f8"><div style="font-size:1.5em"><span class="icon">🔟</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="53b0b5af-718d-4b85-a832-b1c3d9a101ab" class=""><strong>L9　观察用户在哪里&quot;重建 context&quot;，那里就是最高价值的设计机会。</strong></p></div><div style="display:contents" dir="auto"><p id="dc031813-6f88-48a3-991c-9f1f118ed57b" class="">用户每周一早晨打开笔记工具，重读上周的进展——这个&quot;重建&quot;的动作，消耗了他们的工作记忆带宽。谁能减少重建成本，谁就赢。</p></div></div></figure></div><div style="display:contents" dir="ltr"><figure class="callout" style="white-space:pre-wrap;display:flex" id="8d80982b-f62e-4eb5-ba78-a24f02ab78ff"><div style="font-size:1.5em"><span class="icon">🔟</span></div><div style="width:100%"><div style="display:contents" dir="auto"><p id="624c93ea-624a-4923-993f-cb2f71634dc2" class=""><strong>L10　Context 是一等公民。</strong></p></div><div style="display:contents" dir="auto"><p id="98152f78-213b-4d87-ab2a-1d8162784d50" class="">双向链接、引用、@提及、面包屑导航、版本历史——这些看似辅助的信息，不是产品附加功能。它们是<strong>知识产品的主干结构</strong>。21 世纪的知识工具，评判标准不再是&quot;能存多少&quot;，而是&quot;context 之间能连多深&quot;。</p></div></div></figure></div><div style="display:contents" dir="auto"><hr id="67662950-0aa5-43bd-a2ac-428363525125"/></div><div style="display:contents" dir="auto"><h2 id="d1821062-bee8-47a0-b176-69727021eb8b" class="">结语</h2></div><div style="display:contents" dir="auto"><p id="8c33063a-9e48-4be8-b240-43e95c2b92c3" class="">我们回到维特根斯坦那句话的开头——&quot;我的语言的边界，就是我的世界的边界。&quot;现在我们可以给出它的 context 翻译版：</p></div><div style="display:contents" dir="auto"><blockquote id="c96cd34e-70c1-4480-a261-f317099a4070" class=""><strong>你的 context 的边界，就是你能有效行动的世界的边界。</strong></blockquote></div><div style="display:contents" dir="auto"><p id="d342ae7b-f930-4169-8d02-dffe4eeaa4e9" class="">这不是悲观的论断，而是赋能的——因为 context 是<strong>可以被设计、被扩展、被整理的</strong>。每一次你改善笔记系统、优化团队流程、精简产品界面——你都在字面意义上扩展自己作为一个智能体的有效半径。</p></div><div style="display:contents" dir="auto"><p id="fa00044c-8c5d-4c09-84ef-36f76d1dd0c9" class="">这就是为什么我们讨论 Zettelkasten、看板、OKR、叙事策略。它们表面上是工具和方法，本质上是<strong>人类试图把自己的注意力外化、结构化、持久化的努力</strong>。</p></div><div style="display:contents" dir="auto"><p id="b8fe739b-58c8-4b22-bdd0-df5d7d19d178" class="">法国哲学家贝尔纳·斯蒂格勒（Bernard Stiegler）称之为&quot;第三持存&quot;——人不仅能记住（第一持存：感知），不仅能回忆（第二持存：记忆），还能把记忆托付给外部技术对象（第三持存：工具）。</p></div><div style="display:contents" dir="auto"><blockquote id="1cf4c23d-a1ac-4d25-b0d8-8b45de2ae065" class=""><strong>人之为人的特征之一，就是我们一直在用工具扩展自己的 context 窗口。</strong></blockquote></div><div style="display:contents" dir="auto"><hr id="28cb6e2a-099b-4814-bf1e-4f6cb7775b8f"/></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
